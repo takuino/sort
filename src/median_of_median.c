@@ -50,7 +50,7 @@ int median(int A[], int n){
         B[j] = quick_select(B + 5*j, l - 5*j, (l - 5*j - 1)/2);
         l = j + 1;
     }
-    return quick_select(B + 0, l, l/2);
+    return quick_select(B + 0, l, (l - 1)/2);
 }
 
 int median_of_median(int A[], int n, int k){
