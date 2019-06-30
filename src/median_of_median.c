@@ -14,24 +14,65 @@ void swap(int *p, int *q){
 }
 
 int quick_select(int A[], int n, int k){
-  int i, j, pivot;
-
-// 真ん中の要素をピボットとする
-  pivot = A[n/2];
-  A[n/2] = A[0];
-  A[0] = pivot;
-  for(i = j = 1; i < n; i++){
-    if(A[i] <= pivot){
-      swap(A+i, A+j);
-      j++;
+    int i, j, x, pivot;
+    
+    // 真ん中の要素をピボットとする
+    pivot = A[n/2];
+    A[n/2] = A[0];
+    A[0] = pivot;
+    for(i = j = x = 1; i < n; i++){
+        if(A[i] <= pivot){
+            swap(A + i, A + j);
+            if(A[j] == pivot){
+                swap(A + j,A + x);
+                x++;
+            }
+            j++;
+        }
     }
-  }
-
-  if(j == k+1) return pivot;
-  else if(j < k+1) return quick_select(A+j, n-j, k-j);
-  else return quick_select(A+1, j-1, k);
+    
+    if(j - x < k + 1 && k + 1 <= j) return pivot;
+    else if(j < k + 1) return quick_select(A + j, n - j, k - j);
+    else return quick_select(A + x, j - x, k);
 }
 
+int median(int A[], int n){
+    int i, j, l, B[N];
+    for(i = 0; i < n; i++){
+        B[i] = A[i];
+    }
+    l = n;
+    while(l > 5){
+        for(i = j = 0; 5*i <= l - 5; i++){
+            B[i] =  quick_select(B + 5*i, 5, 2);
+            j++;
+        }
+        B[j] = quick_select(B + 5*j, l - 5*j, (l - 5*j - 1)/2);
+        l = j;
+    }
+    return quick_select(B, l-5, (l-6)/2);
+}
+
+int median_of_median(int A[], int n, int k){
+    int i, j, l, pivot;
+    pivot = median(A, n);
+    for(i = 0; i < n; i++){
+        if(pivot == A[i]){
+            l = i;
+        }
+    }
+        A[l] = A[0];
+        A[0] = pivot;
+        for(i = j = 1; i < n; i++){
+            if(A[i] <= pivot){
+                swap(A + i, A + j);
+                j++;
+            }
+        }
+    if(j == k + 1) return pivot;
+    else if(j < k + 1) return median_of_median(A + j, n - j, k - j);
+    else return median_of_median(A + 1, j - 1, k);
+}
 
 int main(){
   int i;
