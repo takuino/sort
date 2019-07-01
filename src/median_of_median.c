@@ -36,35 +36,31 @@ int quick_select(int A[], int n, int k){
     else return quick_select(A + x, j - x, k);
 }
 
-int median(int A[], int n){
-    int i, j, l, B[N];
-    for(i = 0; i < n; i++){
-        B[i] = A[i];
-    }
-    l = n;
-    while(l > 5){
-        for(i = j = 0; 5*i < l - 5; i++){
-            B[i] =  quick_select(B + 5*i, 5, 2);
-            j++;
-        }
-        B[j] = quick_select(B + 5*j, l - 5*j, (l - 5*j)/2);
-        l = j + 1;
-    }
-    return quick_select(B + 0, l, l/2);
-}
 
 int median_of_median(int A[], int n, int k){
-    int i, j, l, x, pivot;
+    int a, b, c, B[N], i, j, l, x, pivot;
     if(n <= 5){
         return quick_select(A, n, n/2);
     }
     else{
-    pivot = median(A, n);
-    for(i = 0; i < n; i++){
-        if(pivot == A[i]){
-            l = i;
+        for(a = 0; a < n; a++){
+            B[a] = A[a];
         }
-    }
+        c = n;
+        while(c > 5){
+            for(a = b = 0; 5*a < c - 5; a++){
+                B[a] =  quick_select(B + 5*a, 5, 2);
+                b++;
+            }
+            B[b] = quick_select(B + 5*b, c - 5*b, (c - 5*b)/2);
+            c = b + 1;
+        }
+        pivot = quick_select(B + 0, c, c/2);
+        for(i = 0; i < n; i++){
+            if(pivot == A[i]){
+                l = i;
+            }
+        }
         A[l] = A[0];
         A[0] = pivot;
     for(i = j = x = 1; i < n; i++){
