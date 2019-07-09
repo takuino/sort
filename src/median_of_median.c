@@ -13,6 +13,8 @@ void swap(int *p, int *q){
   *q = tmp;
 }
 
+
+
 int quick_select(int A[], int n, int k){
     int i, j, x, pivot;
     
@@ -37,8 +39,9 @@ int quick_select(int A[], int n, int k){
 }
 
 
+
 int median_of_median(int A[], int n, int k){
-    int a, b, c, B[N], i, j, l, x, pivot;
+    int a, b, B[N], r, i, j, l, pivot;
     if(n <= 5){
         return quick_select(A, n, n/2);
     }
@@ -46,39 +49,33 @@ int median_of_median(int A[], int n, int k){
         for(a = 0; a < n; a++){
             B[a] = A[a];
         }
-        c = n;
-        while(c > 5){
-            for(a = b = 0; 5*a < c - 5; a++){
-                B[a] =  quick_select(B + 5*a, 5, 2);
-                b++;
-            }
-            B[b] = quick_select(B + 5*b, c - 5*b, (c - 5*b)/2);
-            c = b + 1;
+        for(a = b = 0; 5*a < n - 5; a++){
+            B[a] =  quick_select(B + 5*a, 5, 2);
+            b++;
         }
-        pivot = quick_select(B + 0, c, c/2);
-        for(i = 0; i < n; i++){
-            if(pivot == A[i]){
-                l = i;
-            }
+        B[b] = quick_select(B + 5*b, n - 5*b, (n - 5*b)/2);
+    pivot = median_of_median(B + 0, b + 1, (b + 1)/2);
+    for(i = 0; i < n; i++){
+        if(pivot == A[i]){
+            l = i;
         }
+    }
         A[l] = A[0];
         A[0] = pivot;
-    for(i = j = x = 1; i < n; i++){
-        if(A[i] <= pivot){
-            swap(A + i, A + j);
-            if(A[j] == pivot){
-                swap(A + j,A + x);
-                x++;
-            }
-            j++;
+        for(i = j = 1; i < n; i++){
+            if(A[i] <= pivot){
+                swap(A + i, A + j);
+                j++;}
         }
-    }
-    
-    if(j - x < k + 1 && k + 1 <= j) return pivot;
-    else if(j < k + 1) return median_of_median(A + j, n - j, k - j);
-    else return median_of_median(A + x, j - x, k);
+    swap(A + 0,A + j - 1);
+        r = j - 1;
+    if(r == k) return pivot;
+    else if(r < k) return quick_select(A + j, n - j, k - r - 1);
+    else return quick_select(A + 0, j - 1, k);
     }
 }
+
+
 
 int main(){
   int i;

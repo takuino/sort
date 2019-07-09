@@ -20,9 +20,7 @@ A[0], A[1], ..., A[n-1] をソートして昇順に書き換える関数
 void quick_sort(int A[], int n){
     int i, j, k, pivot;
     if(n == 0) return;
-    pivot = A[n/2];
-    A[n/2] = A[0];
-    A[0] = pivot;
+    pivot = A[0];
     for(i = j = k = 1; i < n; i++){
         if(A[i] <= pivot){
             swap(A + i, A + j);
@@ -33,9 +31,12 @@ void quick_sort(int A[], int n){
             j++;
         }
     }
-    swap(A + 0,A + j - 1);
+    for (i = 0; i < k; i++){
+        swap(A + i, A + j - i - 1);
+    }
+    
+    quick_sort(A + 0 , j - k);
     quick_sort(A + j, n - j);
-    quick_sort(A + 0, j - 1);
 }
 
 int main(){
